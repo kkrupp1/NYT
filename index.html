@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <!--link to Bootstrap CSS-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B"
+        crossorigin="anonymous">
+    <!--link to Custom CSS-->
+    <link rel="stylesheet" href="./nyt/style.css">
+
+
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="jumbotron">
+
+            <img src="https://png.icons8.com/metro/1600/news.png" width ="100px" class="img-thumbnail">
+
+            <h1 class="display-4 text-center">New York Times Search</h1>
+
+        </div>
+
+        <div class = "card">
+            <div class = "card-header">Search Parameters</div>
+
+        <form class = "px-4 pb-2">
+            <div class="form-group">
+                <label for="searchTerm">Search Term:</label>
+                <input type="text" class="form-control" id="search-term">
+            </div>
+
+            <div class="form-group">
+                <label for="records">Number of Records to Retrieve:</label>
+                <select class="form-control" type="text" class="form-control" id="records">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="startYear">Start Year (Optional):</label>
+                <input type="text" class="form-control" id="start-year">
+            </div>
+
+            <div class="form-group">
+                <label for="endYear">End Year (Optional):</label>
+                <input type="text" class="form-control" id="end-year">
+            </div>
+
+            <button type="button" class="btn btn-primary btn-sm" id="submit">Search</button>
+            <button type="button" class="btn btn-secondary btn-sm" id="clear">Clear</button>
+
+
+            </form>
+        </div>
+
+
+        <br>
+
+            <div class="card">
+                <div class ="card-header">Top Articles</div>
+                    <div class="card-body" id="top-articles">
+                    </div>
+                  </div>
+             </div>
+
+
+
+<!-- javascript section -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+        $(document).ready(function () {
+
+            // ON CLICK TRIGGER API SEACH
+            $("#submit").on("click", function () {
+                var $searchTerm = $("#search-term").val();
+                var $numRecords = parseInt($("#records").val());
+                var $startYear = $("#start-year").val();
+                var $endYear = $("#end-year").val();
+
+                var url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+                url += '?' + $.param({
+                    'api-key': "331ef5c669b24e2db95f8d7a1bc6692b",
+                    'q': $searchTerm,
+                    'page': $numRecords,
+                    'begin_date': $startYear,
+                    'end_Date': $endYear,
+                });
+
+                // ajax request
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                }).then(function (result) {
+                    $("#top-articles").empty();
+                    console.log(result);
+                    // console.log(result.response.docs[i].multimedia[2].url)
+                    for (var i = 0; i < $numRecords; i++) {
+                        $("#top-articles").append("<a href='" + result.response.docs[i].web_url + "'><h3>" + result.response.docs[i].headline.main + "</h3></a>");
+                        $("#top-articles").append("<p>" + result.response.docs[i].headline.print_headline + "</p>");
+
+                    }
+                });
+
+            }); //submit button closing
+        });//document ready closing
+    </script>
+
+</body>
+
+</html>
